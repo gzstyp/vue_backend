@@ -97,25 +97,16 @@ public class RoleService{
         return ToolClient.executeRows(roleDao.delByKeys(lists),"操作成功","角色已不存在,刷新重试");
     }
 
-    public String listData(PageFormData pageFormData){
-        final String p_iColumns = "iColumns";
-        final String validate = ToolClient.validateField(pageFormData,p_iColumns);
-        if(validate != null)return validate;
-        final String fieldInteger = ToolClient.validateInteger(pageFormData,p_iColumns);
-        if(fieldInteger != null)return fieldInteger;
-        try {
-            pageFormData = ToolClient.dataTableMysql(pageFormData);
-            if(pageFormData == null)return ToolClient.jsonValidateField();
-            final String userId = LocalUserId.get();
-            final String loginUser = userDao.queryExistById(userId);
-            if(loginUser.equals(ConfigFile.KEY_SUPER)){
-                pageFormData.put("keySuper",loginUser);
-            }
-            final HashMap<String,Object> map = roleDao.listData(pageFormData);
-            return ToolClient.dataTableOK((List<Object>)map.get(ConfigFile.rows),map.get(ConfigFile.total),(List<String>)map.get(ConfigFile.permissions),pageFormData.get("sEcho"));
-        } catch (Exception e){
-            return ToolClient.dataTableException(pageFormData.get("sEcho"));
+    public String listData(PageFormData formData){
+        formData = ToolClient.dataTableMysql(formData);
+        if(formData == null)return ToolClient.jsonValidateField();
+        final String userId = LocalUserId.get();
+        final String loginUser = userDao.queryExistById(userId);
+        if(loginUser.equals(ConfigFile.KEY_SUPER)){
+            formData.put("keySuper",loginUser);
         }
+        final HashMap<String,Object> map = roleDao.listData(formData);
+        return ToolClient.dataTable((List<Object>)map.get(ConfigFile.rows),map.get(ConfigFile.total),(List<String>)map.get(ConfigFile.permissions));
     }
 
     public String delEmptyMenu(final PageFormData pageFormData){

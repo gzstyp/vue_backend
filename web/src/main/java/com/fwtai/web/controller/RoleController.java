@@ -1,5 +1,6 @@
 package com.fwtai.web.controller;
 
+import com.fwtai.bean.PageFormData;
 import com.fwtai.service.core.RoleService;
 import com.fwtai.tool.ToolClient;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -60,7 +61,7 @@ public class RoleController{
     @PreAuthorize("hasAuthority('role_btn_listData')")
     @GetMapping("/listData")
     public void listData(final HttpServletRequest request,final HttpServletResponse response){
-        ToolClient.responseJson(roleService.listData(ToolClient.getFormData(request)),response);
+        ToolClient.responseJson(roleService.listData(new PageFormData(request)),response);
     }
 
     /**行按钮清空菜单*/

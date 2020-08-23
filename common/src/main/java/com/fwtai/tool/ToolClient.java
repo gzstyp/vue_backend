@@ -824,43 +824,35 @@ public final class ToolClient implements Serializable{
      * @QQ号码 444141300
      * @主页 http://www.fwtai.com
     */
-    public static PageFormData dataTableMysql(final PageFormData pageFormData) throws Exception{
-        final String iDisplayLength = "iDisplayLength";
-        final String iDisplayStart = "iDisplayStart";
-        Integer rows = pageFormData.getInteger(iDisplayLength);
-        final Integer start = pageFormData.getInteger(iDisplayStart);
-        if(rows == null || start == null) return null;
-        Integer current = (start / rows) + 1; //计算当前页
-        final String sort = pageFormData.getString("sSortDir_0");//排序关键字
-        final String index = pageFormData.getString("iSortCol_0");//排序的列索引
-        final String column = pageFormData.getString("mDataProp_"+index);//排序的字段
-        final int iColumns = pageFormData.getInteger("iColumns");
-        pageFormData.remove("sColumns");
-        pageFormData.remove("iColumns");
-        pageFormData.remove("sSortDir_0");
-        pageFormData.remove("iSortCol_0");
-        pageFormData.remove(iDisplayLength);
-        pageFormData.remove(iDisplayStart);
-        pageFormData.remove("iSortingCols");
-        for(int i = 0; i < iColumns; i++){
-            pageFormData.remove("bSortable_"+i);
-            pageFormData.remove("mDataProp_"+i);
-        }
-        if(rows == null || rows < 0){
-            rows = 50;
-        }
+    public static PageFormData dataTableMysql(final PageFormData pageFormData){
+        Integer size = pageFormData.getInteger("pageSize");//每页大小
+        Integer current = pageFormData.getInteger("current");//当前页
+        if(size == null || current == null) return null;
         if(current <= 0){
             current = 1;
         }
-        final Integer pageSize = rows > 100 ? ConfigFile.size_default : rows;
-        pageFormData.put(ConfigFile.section,(current - 1) * pageSize);//读取区间
-        pageFormData.put(ConfigFile.pageSize,pageSize);//每页大小
-        final String _column = ToolString.sqlInject(column);
-        final String _sort = ToolString.sqlInject(sort);
-        if(_column != null && _sort != null){
-            pageFormData.put("column",_column);//排序字段 order by name desc
-            pageFormData.put("order",_sort);//排序关键字(升序|降序)
+        if(size > 200){
+            size = ConfigFile.size_default;
         }
+        String sort = pageFormData.getString("sort");
+        String column = pageFormData.getString("column");
+        if(column != null){
+            if(sort != null){
+                sort = ToolString.sqlInject(sort);
+                sort = sort.replace("ascending","ASC").replace("descending","DESC");
+            }else{
+                sort = "DESC";
+            }
+            column = ToolString.sqlInject(column);
+            if(column != null && sort != null){
+                pageFormData.put("column",column.toUpperCase());//排序字段 order by name desc
+                pageFormData.put("order",sort);//排序关键字(升序|降序)
+            }
+        }
+        pageFormData.remove("sort");
+        pageFormData.put(ConfigFile.section,(current - 1) * size);//读取区间
+        pageFormData.put(ConfigFile.pageSize,size);//每页大小
+        pageFormData.remove("current");
         return pageFormData;
     }
 
@@ -1064,7 +1056,7 @@ public final class ToolClient implements Serializable{
      * @QQ号码 444141300
      * @官网 http://www.fwtai.com
      */
-    public static String dataTableOK(List<Object> listData,Object total,final List<String> permissions,final Object sEcho){
+    public static String dataTable(List<Object> listData,Object total,final List<String> permissions){
         final JSONObject json = new JSONObject();
         if(listData != null && listData.size() <= 0){
             listData = new ArrayList();
@@ -1078,21 +1070,9 @@ public final class ToolClient implements Serializable{
         if(permissions != null && permissions.size() > 0){
             json.put(ConfigFile.permissions,permissions);
         }
-        json.put("sEcho",sEcho);
         json.put(ConfigFile.recordsTotal,total);
         json.put(ConfigFile.recordsFiltered,total);
         json.put(ConfigFile.data,listData);
-        return json.toJSONString();
-    }
-
-    public static String dataTableException(final Object sEcho){
-        final JSONObject json = new JSONObject();
-        json.put(ConfigFile.code,ConfigFile.code204);
-        json.put(ConfigFile.msg,ConfigFile.msg204);
-        json.put("sEcho",sEcho);
-        json.put(ConfigFile.recordsTotal,0);
-        json.put(ConfigFile.recordsFiltered,0);
-        json.put(ConfigFile.data,new ArrayList<Object>());
         return json.toJSONString();
     }
 

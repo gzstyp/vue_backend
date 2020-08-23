@@ -80,7 +80,7 @@ public class UserController{
     @PreAuthorize("hasAuthority('user_btn_listData')")
     @GetMapping("/listData")
     public void listData(final HttpServletRequest request,final HttpServletResponse response){
-        ToolClient.responseJson(userService.listData(ToolClient.getFormData(request)),response);
+        ToolClient.responseJson(userService.listData(new PageFormData(request)),response);
     }
 
     /**获取角色数据*/

@@ -1,5 +1,6 @@
 package com.fwtai.web.controller;
 
+import com.fwtai.bean.PageFormData;
 import com.fwtai.service.core.MenuService;
 import com.fwtai.tool.ToolClient;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,7 +54,7 @@ public class MenuController{
     @PreAuthorize("hasAuthority('menu_btn_listData')")
     @GetMapping("/listData")
     public void listData(final HttpServletRequest request,final HttpServletResponse response){
-        ToolClient.responseJson(menuService.listData(ToolClient.getFormData(request)),response);
+        ToolClient.responseJson(menuService.listData(new PageFormData(request)),response);
     }
 
     /**获取详细信息*/

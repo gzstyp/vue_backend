@@ -290,26 +290,20 @@ public class UserService{
     }
 
     public String listData(PageFormData pageFormData){
-        final String p_iColumns = "iColumns";
-        final String validate = ToolClient.validateField(pageFormData,p_iColumns);
+        final String validate = ToolClient.validateField(pageFormData);
         if(validate != null)return validate;
-        final String fieldInteger = ToolClient.validateInteger(pageFormData,p_iColumns);
+        final String fieldInteger = ToolClient.validateInteger(pageFormData);
         if(fieldInteger != null)return fieldInteger;
-        try {
-            pageFormData = ToolClient.dataTableMysql(pageFormData);
-            if(pageFormData == null)return ToolClient.jsonValidateField();
-            final String userId = LocalUserId.get();
-            final String loginUser = userDao.queryExistById(userId);
-            pageFormData.put("userId",userId);
-            if(loginUser.equals(ConfigFile.KEY_SUPER)){
-                pageFormData.put("keySuper",loginUser);
-            }
-            final HashMap<String,Object> map = userDao.listData(pageFormData);
-            return ToolClient.dataTableOK((List<Object>)map.get(ConfigFile.rows),map.get(ConfigFile.total),(List<String>)map.get(ConfigFile.permissions),pageFormData.get("sEcho"));
-        } catch (Exception e){
-            e.printStackTrace();
-            return ToolClient.dataTableException(pageFormData.get("sEcho"));
+        pageFormData = ToolClient.dataTableMysql(pageFormData);
+        if(pageFormData == null)return ToolClient.jsonValidateField();
+        final String userId = LocalUserId.get();
+        final String loginUser = userDao.queryExistById(userId);
+        pageFormData.put("userId",userId);
+        if(loginUser.equals(ConfigFile.KEY_SUPER)){
+            pageFormData.put("keySuper",loginUser);
         }
+        final HashMap<String,Object> map = userDao.listData(pageFormData);
+        return ToolClient.dataTable((List<Object>)map.get(ConfigFile.rows),map.get(ConfigFile.total),(List<String>)map.get(ConfigFile.permissions));
     }
 
     //根据指定userid获取菜单用于分配私有菜单
