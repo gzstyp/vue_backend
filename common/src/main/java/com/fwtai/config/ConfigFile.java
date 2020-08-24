@@ -107,10 +107,6 @@ public final class ConfigFile implements Serializable{
 	public final static String data = "data";
     /**返回权限数据json关键字key响应给客户端*/
     public final static String permissions = "permissions";
-	/**datatable的总记录数*/
-	public final static String recordsFiltered = "recordsFiltered";
-	/**datatable的总记录数*/
-	public final static String recordsTotal = "recordsTotal";
     /**统一全局的current当前页json关键字key响应给客户端*/
     public final static String current = "current";
 	/**分页的默认大小*/

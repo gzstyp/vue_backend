@@ -1070,8 +1070,6 @@ public final class ToolClient implements Serializable{
         if(permissions != null && permissions.size() > 0){
             json.put(ConfigFile.permissions,permissions);
         }
-        json.put(ConfigFile.recordsTotal,total);
-        json.put(ConfigFile.recordsFiltered,total);
         json.put(ConfigFile.data,listData);
         return json.toJSONString();
     }
