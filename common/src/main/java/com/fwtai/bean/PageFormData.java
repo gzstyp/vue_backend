@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public final class PageFormData extends HashMap<String,Object>{
 	/**构建获取POST方式的参数,用法:new PageFormData().build(request);*/
     public PageFormData build(final HttpServletRequest request){
         try {
-            final BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF-8"));
+            final BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(),StandardCharsets.UTF_8));
             final StringBuilder sb = new StringBuilder();
             String s = "";
             while((s = in.readLine()) != null){
@@ -92,7 +93,7 @@ public final class PageFormData extends HashMap<String,Object>{
     public final JSONObject buildJSONObject(final HttpServletRequest request){
         JSONObject json = new JSONObject(20);
         try {
-            final BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF-8"));
+            final BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(),StandardCharsets.UTF_8));
             final StringBuilder sb = new StringBuilder();
             String s = "";
             while((s = in.readLine()) != null){
@@ -127,7 +128,7 @@ public final class PageFormData extends HashMap<String,Object>{
     public final JSONArray buildJSONArray(final HttpServletRequest request){
         final JSONArray jsonArray = new JSONArray();
         try {
-            final BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(),"UTF-8"));
+            final BufferedReader in = new BufferedReader(new InputStreamReader(request.getInputStream(),StandardCharsets.UTF_8));
             final StringBuilder sb = new StringBuilder();
             String s = "";
             while((s = in.readLine()) != null){
@@ -197,7 +198,7 @@ public final class PageFormData extends HashMap<String,Object>{
         final StringBuilder sb = new StringBuilder();
         try {
             final InputStream is = request.getInputStream();
-            final InputStreamReader isr = new InputStreamReader(is,"UTF-8");
+            final InputStreamReader isr = new InputStreamReader(is,StandardCharsets.UTF_8);
             final BufferedReader br = new BufferedReader(isr);
             String s = "";
             while ((s = br.readLine()) != null){
