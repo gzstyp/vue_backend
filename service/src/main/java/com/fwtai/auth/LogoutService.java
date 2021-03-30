@@ -5,7 +5,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
+import org.springframework.util.ObjectUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ public class LogoutService implements LogoutHandler {
     @Override
     public void logout(final HttpServletRequest request,final HttpServletResponse response,final Authentication authentication) {
         final String token = request.getHeader(ConfigFile.ACCESS_TOKEN);
-        if (!StringUtils.isEmpty(token)) {
+        if (!ObjectUtils.isEmpty(token)) {
             System.out.println("accessToken = " + authentication);
             SecurityContextHolder.clearContext();
         }
